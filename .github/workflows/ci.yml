@@ -1,9 +1,31 @@
-name: 'Run App Yan, Zidane'
+name: Run App Yan, Zidane
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build-and-test:
+    name: Build and Run Unit Tests - ZidaneYan
     runs-on: ubuntu-latest
+
     steps:
-      - run: echo "Hello, World!"
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore CI_Lab.sln
+
+      - name: Build
+        run: dotnet build CI_Lab.sln --no-restore --configuration Release
+
+      - name: Test
+        run: dotnet test CI_Lab.sln --no-build --verbosity normal
+
